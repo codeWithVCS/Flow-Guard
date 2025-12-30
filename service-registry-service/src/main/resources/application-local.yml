@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/service_registry_db}
+    username: ${DB_USERNAME:flowguard}
+    password: ${DB_PASSWORD:flowguard}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
