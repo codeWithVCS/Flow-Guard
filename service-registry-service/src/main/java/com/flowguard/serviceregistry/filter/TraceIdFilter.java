@@ -1,4 +1,4 @@
-package com.flowguard.serviceregistry.infrastructure.web.filter;
+package com.flowguard.serviceregistry.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
