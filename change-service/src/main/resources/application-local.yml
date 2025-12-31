@@ -1,0 +1,23 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/change_db
+    username: flowguard
+    password: flowguard
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    show-sql: false
+
+  flyway:
+    enabled: true
+
+management:
+  endpoint:
+    health:
+      show-details: always

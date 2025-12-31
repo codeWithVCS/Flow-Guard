@@ -16,6 +16,7 @@
     <description>Parent BOM and build configuration for FlowGuard platform</description>
     <modules>
         <module>service-registry-service</module>
+        <module>change-service</module>
     </modules>
 
     <!-- Centralized versions -->
