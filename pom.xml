@@ -17,6 +17,7 @@
     <modules>
         <module>service-registry-service</module>
         <module>change-service</module>
+        <module>deployment-service</module>
     </modules>
 
     <!-- Centralized versions -->

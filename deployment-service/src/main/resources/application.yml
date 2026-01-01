@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: deployment-service
+
+  profiles:
+    active: local
