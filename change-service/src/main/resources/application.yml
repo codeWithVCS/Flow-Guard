@@ -4,6 +4,8 @@ spring:
 
   profiles:
     active: local
+  kafka:
+    bootstrap-servers: localhost:9092
 
 management:
   endpoints:
@@ -18,3 +20,9 @@ management:
 
 service-registry:
   base-url: http://localhost:8081
+
+app:
+  kafka:
+    topics:
+      change-recorded: change.recorded.v1
+
