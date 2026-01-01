@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: approval-service
+
+  profiles:
+    active: local
