@@ -11,6 +11,9 @@ import com.flowguard.deploymentservice.client.model.ServiceInfo;
 import com.flowguard.deploymentservice.client.model.ServiceStatus;
 import com.flowguard.deploymentservice.domain.Deployment;
 import com.flowguard.deploymentservice.domain.Environment;
+import com.flowguard.deploymentservice.event.model.DeploymentCreatedEventV1;
+import com.flowguard.deploymentservice.event.model.DeploymentEventType;
+import com.flowguard.deploymentservice.event.producer.DeploymentCreatedEventProducer;
 import com.flowguard.deploymentservice.exception.ApprovalRequiredException;
 import com.flowguard.deploymentservice.exception.DeploymentAlreadyExistsException;
 import com.flowguard.deploymentservice.exception.DeploymentNotFoundException;
@@ -22,6 +25,7 @@ import com.flowguard.deploymentservice.service.DeploymentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,18 +38,23 @@ public class DeploymentServiceImpl implements DeploymentService {
     private final DeploymentRepository deploymentRepository;
     private final ServiceRegistryClient serviceRegistryClient;
     private final ChangeServiceClient changeServiceClient;
+    private final DeploymentCreatedEventProducer eventProducer;
 
     public DeploymentServiceImpl(
             DeploymentRepository deploymentRepository,
             ServiceRegistryClient serviceRegistryClient,
-            ChangeServiceClient changeServiceClient) {
+            ChangeServiceClient changeServiceClient,
+            DeploymentCreatedEventProducer eventProducer
+    ) {
         this.deploymentRepository = deploymentRepository;
         this.serviceRegistryClient = serviceRegistryClient;
         this.changeServiceClient = changeServiceClient;
+        this.eventProducer = eventProducer;
     }
 
     @Override
     public DeploymentResponse deploy(CreateDeploymentRequest request) {
+
         ServiceInfo serviceInfo = serviceRegistryClient
                 .getService(request.getServiceId())
                 .orElseThrow(() ->
@@ -67,6 +76,7 @@ public class DeploymentServiceImpl implements DeploymentService {
                 request.getVersion())) {
             throw new DeploymentAlreadyExistsException("Deployment already exists for this version");
         }
+
         validateChanges(request.getServiceId(), request.getChangeIds());
 
         Deployment deployment = new Deployment(
@@ -77,14 +87,28 @@ public class DeploymentServiceImpl implements DeploymentService {
                 request.getDeployedBy()
         );
 
-        Deployment saved = deploymentRepository.save(deployment);
+        Deployment savedDeployment = deploymentRepository.save(deployment);
 
-        return mapToResponse(saved);
+        DeploymentCreatedEventV1 event = new DeploymentCreatedEventV1(
+                UUID.randomUUID(),
+                DeploymentEventType.DEPLOYMENT_CREATED,
+                "v1",
+                Instant.now(),
+                savedDeployment.getId(),
+                savedDeployment.getServiceId(),
+                savedDeployment.getEnvironment().name(),
+                savedDeployment.getVersion()
+        );
+
+        eventProducer.publish(event);
+
+        return mapToResponse(savedDeployment);
     }
 
     @Override
     @Transactional(readOnly = true)
     public DeploymentResponse getLatest(UUID serviceId, Environment environment) {
+
         Deployment deployment = deploymentRepository
                 .findTopByServiceIdAndEnvironmentOrderByDeployedAtDesc(serviceId, environment)
                 .orElseThrow(() ->
