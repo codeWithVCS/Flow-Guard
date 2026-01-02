@@ -16,4 +16,6 @@ public interface DeploymentService {
 
     List<DeploymentSummaryResponse> list(UUID serviceId, Environment environment);
 
+    DeploymentResponse getById(UUID deploymentId);
+
 }

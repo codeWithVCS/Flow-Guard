@@ -27,7 +27,7 @@ public class ApprovalController {
     }
 
     @GetMapping("/deployments/{deploymentId}")
-    public ResponseEntity<ApprovalResponse> getByDeploymentId(@PathVariable UUID deploymentId){
+    public ResponseEntity<ApprovalResponse> getByDeploymentId(@PathVariable("deploymentId") UUID deploymentId){
         ApprovalResponse response = approvalService.getByDeploymentId(deploymentId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

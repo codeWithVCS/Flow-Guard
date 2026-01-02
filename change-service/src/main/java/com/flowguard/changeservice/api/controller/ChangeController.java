@@ -28,13 +28,13 @@ public class ChangeController {
     }
 
     @GetMapping("/changes/{id}")
-    public ResponseEntity<ChangeResponse> getChangeById(@PathVariable UUID id){
+    public ResponseEntity<ChangeResponse> getChangeById(@PathVariable("id") UUID id){
         ChangeResponse response = changeService.getById(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/services/{serviceId}/changes")
-    public ResponseEntity<List<ChangeSummaryResponse>> getChangeByServiceId(@PathVariable UUID serviceId){
+    public ResponseEntity<List<ChangeSummaryResponse>> getChangeByServiceId(@PathVariable("serviceId") UUID serviceId){
         List<ChangeSummaryResponse> changes = changeService.getByServiceId(serviceId);
         return ResponseEntity.status(HttpStatus.OK).body(changes);
     }

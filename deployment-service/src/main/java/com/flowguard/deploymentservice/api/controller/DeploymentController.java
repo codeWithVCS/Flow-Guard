@@ -47,4 +47,14 @@ public class DeploymentController {
                 deploymentService.list(serviceId, environment)
         );
     }
+
+    @GetMapping("/{deploymentId}")
+    public ResponseEntity<DeploymentResponse> getById(
+            @PathVariable("deploymentId") UUID deploymentId) {
+
+        return ResponseEntity.ok(
+                deploymentService.getById(deploymentId)
+        );
+    }
+
 }

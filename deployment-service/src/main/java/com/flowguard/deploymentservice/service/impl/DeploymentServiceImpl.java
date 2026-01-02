@@ -119,6 +119,17 @@ public class DeploymentServiceImpl implements DeploymentService {
 
     @Override
     @Transactional(readOnly = true)
+    public DeploymentResponse getById(UUID deploymentId) {
+
+        Deployment deployment = deploymentRepository.findById(deploymentId)
+                .orElseThrow(() ->
+                        new DeploymentNotFoundException("Deployment not found"));
+
+        return mapToResponse(deployment);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<DeploymentSummaryResponse> list(UUID serviceId, Environment environment) {
 
         List<Deployment> deployments =
@@ -161,7 +172,7 @@ public class DeploymentServiceImpl implements DeploymentService {
                 deployment.getServiceId(),
                 deployment.getEnvironment(),
                 deployment.getVersion(),
-                deployment.getChangeIds(),
+                Set.copyOf(deployment.getChangeIds()),
                 deployment.getDeployedAt(),
                 deployment.getDeployedBy()
         );

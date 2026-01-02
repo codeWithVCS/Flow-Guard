@@ -30,7 +30,7 @@ public class ServiceRegistryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ServiceResponse> getServiceById(@PathVariable UUID id){
+    public ResponseEntity<ServiceResponse> getServiceById(@PathVariable("id") UUID id){
         ServiceResponse response = serviceRegistryService.getById(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -48,7 +48,7 @@ public class ServiceRegistryController {
     }
 
     @PatchMapping("/{id}/deprecate")
-    public ResponseEntity<Void> deprecate(@PathVariable UUID id){
+    public ResponseEntity<Void> deprecate(@PathVariable("id") UUID id){
         serviceRegistryService.deprecate(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
