@@ -19,6 +19,7 @@
         <module>change-service</module>
         <module>deployment-service</module>
         <module>approval-service</module>
+        <module>api-gateway</module>
     </modules>
 
     <!-- Centralized versions -->
