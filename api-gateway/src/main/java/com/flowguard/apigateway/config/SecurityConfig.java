@@ -16,8 +16,14 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        .anyExchange().permitAll()
+                        .pathMatchers(
+                                "/actuator/health",
+                                "/actuator/readiness",
+                                "/actuator/liveness"
+                        ).permitAll()
+                        .anyExchange().authenticated()
                 )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt())
                 .build();
     }
 }
